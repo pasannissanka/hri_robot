@@ -24,7 +24,7 @@ def on_open(ws):
 
 
 if __name__ == "__main__":
-    uri = 'ws://' + os.getenv('USER') + ':8181/core'
+    uri = 'ws://' + os.getenv('IP_ADDRESS') + ':8181/core'
     websocket.enableTrace(True)
     ws = websocket.WebSocketApp(uri,
                                 on_open=on_open,
