@@ -36,11 +36,11 @@ class FaceDetection:
             region_bnd_y = img_size[1]/3
             x_cored = faces[0][0]
             y_cored = faces[0][1]
-            if 0 < x_cored < region_bnd_x:
+            if region_bnd_x * 2 < x_cored < region_bnd_x * 3:
                 region_x = 1
             elif region_bnd_x < x_cored < region_bnd_x * 2:
                 region_x = 2
-            elif region_bnd_x * 2 < x_cored < region_bnd_x * 3:
+            elif 0 < x_cored < region_bnd_x:
                 region_x = 3
             if 0 < y_cored < region_bnd_y:
                 region_y = 1
