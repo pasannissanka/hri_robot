@@ -14,25 +14,9 @@ def main():
     done = False
     while not done:
         display.draw(160, 140)
-
         faces, region = face_detection.detect()
 
-        print(faces, region)
-
-        x = display.x
-        y = display.y
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-
-        distance_x = mouse_x - x
-        distance_y = mouse_y - y
-        distance = min(math.sqrt(distance_x**2 + distance_y**2), 30)
-        angle = math.atan2(distance_y, distance_x)
-
-        pupil_x = x + (math.cos(angle) * distance)
-        pupil_y = y + (math.sin(angle) * distance)
-
-        display.pupil_x = pupil_x
-        display.pupil_y = pupil_y
+        display.move_eye_ball(region)
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:

@@ -41,6 +41,41 @@ class Display:
         pygame.draw.circle(
             self.screen, BLACK, (self.pupil_x, self.pupil_y), 25)
 
+    def move_eye_ball(self, region):
+        region_x = region[0]
+        region_y = region[1]
+
+        if region_x == 1 and region_y == 1:
+            self.pupil_x = 138.9
+            self.pupil_y = 116.9
+        elif region_x == 1 and region_y == 2:
+            self.pupil_x = 129.9
+            self.pupil_y = 137.9
+        elif region_x == 1 and region_y == 3:
+            self.pupil_x = 140.9
+            self.pupil_y = 162.9
+        elif region_x == 2 and region_y == 1:
+            self.pupil_x = 157.9
+            self.pupil_y = 119.9
+        elif region_x == 2 and region_y == 2:
+            self.pupil_x = self.x
+            self.pupil_y = self.y
+        elif region_x == 2 and region_y == 3:
+            self.pupil_x = 161.9
+            self.pupil_y = 168.9
+        elif region_x == 3 and region_y == 1:
+            self.pupil_x = 179.9
+            self.pupil_y = 117.9
+        elif region_x == 3 and region_y == 2:
+            self.pupil_x = 188.9
+            self.pupil_y = 138.9
+        elif region_x == 3 and region_y == 3:
+            self.pupil_x = 178.9
+            self.pupil_y = 161.9
+        elif region_x == 0 and region_y == 0:
+            self.pupil_x = self.x
+            self.pupil_y = self.y
+
     def draw_mouth(self):
         if (self.action == "happy"):
             pygame.draw.ellipse(self.screen, BLACK, [
