@@ -15,8 +15,9 @@ def main():
     while not done:
         display.draw(160, 140)
 
-        faces = face_detection.detect()
-        # print(faces)
+        faces, region = face_detection.detect()
+
+        print(faces, region)
 
         x = display.x
         y = display.y
