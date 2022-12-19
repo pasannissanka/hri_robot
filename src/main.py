@@ -2,7 +2,9 @@ import math
 import pygame
 import display as d
 import face_detection as fd
-import mycroft_bus as my
+import json
+from threading import Thread
+
 
 from mycroft_bus_client import MessageBusClient, Message
 
@@ -10,14 +12,13 @@ client = MessageBusClient()
 screen = pygame.display.set_mode((320, 480))
 display = d.Display(screen)
 face_detection = fd.FaceDetection(320, 480)
-mycroft_handle = my.MycroftHandler()
 
 
 def main():
     pygame.init()
     done = False
     mycroft_handlers()
-    client.run_forever()
+    client.run_in_thread()
 
     while not done:
         display.draw(160, 140)
@@ -40,11 +41,48 @@ def main():
         pygame.display.update()
 
 
+def print_handler(message):
+    message_data = json.loads(message.serialize())
+    print('Mycroft said "{}"'.format(message_data))
+
+
+def handle_speak(message):
+    try:
+        message_data = json.loads(message.serialize())
+        type = message_data["type"]
+        data = message_data["data"]
+        print('data - {} - type - {}'.format(data, type))
+
+        if data:
+            utterance = data["utterance"]
+            if utterance:
+                display.action = "speak"
+                thread = Thread(
+                    target=d.Display.draw_speak_mouth, args=[display, utterance])
+                thread.start()
+
+            meta = data["meta"]
+            print('meta : {}, utterance : {}'.format(meta, utterance))
+            if meta:
+                skill = meta["skill"]
+                meta_data = meta["data"]
+                dialog = meta["dialog"]
+
+    except ValueError as excp:
+        print('ValueError : {}'.format(excp.msg))
+    except KeyError as key_excp:
+        print('KeyError : {}'.format(key_excp))
+    except RuntimeError as excp:
+        print('Runtime Error : {}'.format(excp))
+
+
 def mycroft_handlers():
-    client.on('speak', mycroft_handle.handle_speak)
+    client.on('speak', handle_speak)
     client.on('question:query.response',
-              mycroft_handle.handle_question_response)
-    client.on('mycroft.audio.service.play', mycroft_handle.handle_audio_play)
+              print_handler)
+    client.on('mycroft.skill.handler.start',
+              print_handler)
+    client.on('mycroft.audio.service.play', print_handler)
 
 
 if __name__ == "__main__":

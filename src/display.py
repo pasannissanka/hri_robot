@@ -1,11 +1,23 @@
 import math
+import os
 import pygame
+import time
+from phonemizer import phonemize
+from phonemizer.separator import Separator
 
 
 BLACK = (0, 0, 0)
 YELLOW = (247, 187, 51)
 SILVER = (53, 57, 58)
 WHITE = (255, 255, 255)
+
+ROOT_DIR = os.path.dirname(os.path.abspath(
+    __file__))  # This is your Project Root
+MOUTH_PATH = os.path.join(ROOT_DIR, "assets/mouths")
+
+# FACE_HAAR = os.path.join(HAAR_PATH, "haarcascade_frontalface_default.xml")
+
+DEFAULT_IMAGE_SIZE = (250, 100)
 
 
 class Display:
@@ -20,6 +32,7 @@ class Display:
         self.y = 140
 
         self.action = "happy"
+        self.speak_data = "0001"
 
     def draw(self, x, y):
         self.screen.fill(YELLOW)
@@ -76,14 +89,50 @@ class Display:
             self.pupil_x = self.x
             self.pupil_y = self.y
 
+    def draw_speak_mouth(self, utterance):
+        phn = phonemize(
+            utterance,
+            language='en-us',
+            backend='espeak',
+            separator=Separator(phone=None, word=' ', syllable='|'),
+            strip=True,
+            preserve_punctuation=False,
+            njobs=4)
+
+        phoneme_list = list(phn)
+        print(phoneme_list)
+        for i in phoneme_list:
+            print("currenty saying : {}".format(i))
+            time.sleep(0.5)
+            if i == "p":
+                self.speak_data = "0005"
+            if i == "ɪ":
+                self.speak_data = "0006"
+            if i == "l":
+                self.speak_data = "0007"
+            if i == " ":
+                self.speak_data = "0009"
+
+    def mouth_by_img(self):
+        m_img = pygame.image.load(
+            os.path.join(MOUTH_PATH, "mouth{}.png".format(self.speak_data)))
+        m_img = pygame.transform.scale(m_img, DEFAULT_IMAGE_SIZE)
+        self.screen.blit(m_img, (45, 250))
+
     def draw_mouth(self):
         if (self.action == "happy"):
-            pygame.draw.ellipse(self.screen, BLACK, [
-                                self.x - 35, 240, 80, 60], 0)
-            pygame.draw.ellipse(self.screen, YELLOW, [
-                                self.x - 35, 235, 80, 60], 0)
+            m_img = pygame.image.load(
+                os.path.join(MOUTH_PATH, "mouth0002.png"))
+            m_img = pygame.transform.scale(m_img, DEFAULT_IMAGE_SIZE)
+
+            self.screen.blit(m_img, (45, 250))
         elif (self.action == "sad"):
             pygame.draw.ellipse(self.screen, BLACK, [
                                 self.x - 35, 260, 80, 60], 0)
             pygame.draw.ellipse(self.screen, YELLOW, [
                                 self.x - 35, 265, 80, 60], 0)
+        elif (self.action == "idle"):
+            pygame.draw.line(self.screen, BLACK,
+                             (140, 260), (180, 260), 10)
+        elif (self.action == "speak"):
+            self.mouth_by_img()
