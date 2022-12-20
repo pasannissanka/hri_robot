@@ -4,6 +4,7 @@ import pygame
 import time
 from phonemizer import phonemize
 from phonemizer.separator import Separator
+import random
 
 
 BLACK = (0, 0, 0)
@@ -103,15 +104,15 @@ class Display:
         print(phoneme_list)
         for i in phoneme_list:
             print("currenty saying : {}".format(i))
-            time.sleep(0.5)
-            if i == "p":
-                self.speak_data = "0005"
-            if i == "ɪ":
-                self.speak_data = "0006"
-            if i == "l":
-                self.speak_data = "0007"
+            time.sleep(0.1)
             if i == " ":
                 self.speak_data = "0009"
+            else:
+                random_mouth = random.randint(1, 22)
+                mouth_txt = f'{random_mouth:04d}'
+                print(mouth_txt)
+                self.speak_data = mouth_txt
+        self.speak_data = "0009"
 
     def mouth_by_img(self):
         m_img = pygame.image.load(
