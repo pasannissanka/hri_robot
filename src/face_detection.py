@@ -23,7 +23,7 @@ class FaceDetection:
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-        self.enable_detection = False
+        self.enable_detection = True
 
     def detect(self):
         if self.enable_detection:
