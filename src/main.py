@@ -46,12 +46,18 @@ def print_handler(message):
     print('Mycroft said "{}"'.format(message_data))
 
 
+def handle_wake_word(message):
+    print('Wake word {}'.format(message.serialize()))
+    face_detection.enable_detection = False
+
+
 def handle_speak(message):
     try:
         message_data = json.loads(message.serialize())
         type = message_data["type"]
         data = message_data["data"]
         print('data - {} - type - {}'.format(data, type))
+        face_detection.enable_detection = True
 
         if data:
             utterance = data["utterance"]
@@ -83,6 +89,7 @@ def mycroft_handlers():
     client.on('mycroft.skill.handler.start',
               print_handler)
     client.on('mycroft.audio.service.play', print_handler)
+    client.on('recognizer_loop:wakeword', handle_wake_word)
 
 
 if __name__ == "__main__":
